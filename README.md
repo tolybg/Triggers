@@ -16,13 +16,15 @@ On your local machine, `cd` into the directory created for your clone and switch
 
 1. Create a trigger that runs when opportunities are created that does the following:
 
-- Creates a task associated with the opportunity to follow up in 10 days time 
+- Creates a task associated with the opportunity to follow up in 10 days time - use the subject 'Follow Up' (case matters!)
 - If the Opportunity amount is over 500000 creates a task with the subject  ‘Reduce Value’ that is associated with the opportunity, due for completion in two days.
+- Set the status of these tasks to 'New'
+- Assign these tasks to yourself
 - Implement in the `Opportunity_ai` trigger and `TaskService` class 
 
 2. Create a trigger that runs when tasks are updated that does the following:
 
-- If the task has a subject of ‘Reduce Value’ and the status is ‘Completed’, update the associated opportunity to reduce the amount by 50%.
+- If the task has a subject of ‘Reduce Value’ and the status has been **changed** to ‘Completed’, update the associated opportunity to reduce the amount by 50%.
 - Create your own trigger and service class.
 
 ### Notes
@@ -39,8 +41,6 @@ Carry out all work in your local filesystem using VS Code, as you will
 need to send them back to Github.
 
 1. Create a scratch org (or connect to an existing one)
-1. Edit the class `force-app/main/default/classes/Homework.cls` and add the code
-   requested in the comments. 
 1. Push the code to your scratch org - this will check that your code compiles
 
 ## Submitting Your Solution for Assessment
@@ -51,9 +51,11 @@ Add `keirbowden` as a [collaborator](https://docs.github.com/en/github/setting-u
 
 The commands below are if you are using Git from the command line - you can also use the VS Code built-in [source control functionality](https://code.visualstudio.com/docs/editor/versioncontrol).
 
-Stage your updated Homework class using the following command: 
+Stage your new/updated classes and triggers using the following commands: 
 
 `git add force-app/main/default/classes`
+
+`git add force-app/main/default/triggers`
 
 and then commit the changes :
 
