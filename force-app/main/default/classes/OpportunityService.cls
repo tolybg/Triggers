@@ -6,25 +6,25 @@ public with sharing class OpportunityService {
 
         Set<Id> oppIds = new Set<Id>();
 
-        for (Task t : newTasksMap.values()) 
+        for (Task task : newTasksMap.values()) 
         {
-            if (t.Status     == Constants.TASK_STATUS_DONE
-                && t.Status  !=  oldTasksMap.get(t.Id).Status
-                && t.Subject == Constants.TASK_SUBJ_HIGH_VALUE //'Reduce Value'
-                && t.WhatId.getSobjectType() == Schema.Opportunity.SObjectType)
+            if (task.Status     == Constants.TASK_STATUS_DONE
+                && task.Status  !=  oldTasksMap.get(task.Id).Status
+                && task.Subject == Constants.TASK_SUBJ_HIGH_VALUE //'Reduce Value'
+                && task.WhatId.getSobjectType() == Schema.Opportunity.SObjectType)
             {
-                oppIds.add(t.WhatId);
+                oppIds.add(task.WhatId);
             }
         }
         
-        Map<Id,Opportunity> oppsToUpdate = OpportunityAccessor.getOppAmounts(oppIds);
+        List<Opportunity> oppsToUpdate = OpportunityAccessor.getOppAmounts(oppIds);
 
-        for(Opportunity o : oppsToUpdate.values()) 
+        for(Opportunity opp : oppsToUpdate) 
         {
-            o.Amount *= Constants.DISCOUNT_RATE;
+            opp.Amount *= Constants.DISCOUNT_RATE;
         }
 
-        update oppsToUpdate.values();
+        update oppsToUpdate;
 
     }
 }

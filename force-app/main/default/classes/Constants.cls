@@ -9,7 +9,12 @@ public with sharing class Constants
     public static final String TASK_STATUS_DONE = 'Completed';
     public static final Double DISCOUNT_RATE = 0.5;
 
-    public Constants() {
+
+    /*
+        Private because it only contains static "constants", 
+        there's no value to allowing it to be instantiated
+    */
+    private Constants() {
 
     }
 }

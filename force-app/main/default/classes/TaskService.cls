@@ -6,36 +6,38 @@ public with sharing class TaskService
     }
 
     /**************************************************************
-    *   Creates a task associated with the opportunity 
+    *   Creates a task associated with any Sobject
     *   to follow up in 10 days time 
     *   Called in the context of an after insert trigger
     ***************************************************************/
 
-    public static void addFollowUpTask(Map<Id,Opportunity> oppMap)
+    public static void addFollowUpTask(Map<Id,sObject> sobjMap)
     {
-        //TODO: if(!Triggers.Stop) 
-
         List<Task> newFollowUpTasks = new List<Task>();
 
-        for (Opportunity o : oppMap.values()) 
+        for (sObject obj : sobjMap.values()) 
         {
-            //TODO: if(o.StageName = 'Prospecting') //Ask KAB???
+            Task newTask      = new Task();
+            newTask.WhatId    = obj.Id;
+            newTask.OwnerId   = System.UserInfo.getUserId();
+            newTask.Status    = Constants.TASK_STATUS_NEW;
+            newTask.Subject   = Constants.TASK_SUBJ_NORMAL;
+            newTask.ActivityDate = System.today().addDays(Constants.DAYS_DUE_NORMAL);
+            newFollowUpTasks.add(newTask);
 
-            Task t      = new Task();
-            t.WhatId    = o.Id;
-            t.OwnerId   = System.UserInfo.getUserId();
-            t.Status    = Constants.TASK_STATUS_NEW;
-            t.Subject   = Constants.TASK_SUBJ_NORMAL;
-            t.ActivityDate = System.today().addDays(Constants.DAYS_DUE_NORMAL);
-            newFollowUpTasks.add(t);
-
-            //high-value tasks
-            if(o.Amount > Constants.OPP_HIGH_VALUE_THRESHOLD)
+            //high-value Opportunity
+            if( obj instanceof Opportunity)
             {
-                Task t2 = t.clone();
-                t2.Subject   =  Constants.TASK_SUBJ_HIGH_VALUE ;
-                t2.ActivityDate = System.today().addDays(Constants.DAYS_DUE_HIGH_VALUE);
-                newFollowUpTasks.add(t2);
+                Decimal oppAmount = (Decimal) obj.get('Amount');
+                Boolean isHighValueOpp = oppAmount > Constants.OPP_HIGH_VALUE_THRESHOLD;
+
+                if(isHighValueOpp)
+                {
+                    Task hvoTask = newTask.clone();
+                    hvoTask.Subject   =  Constants.TASK_SUBJ_HIGH_VALUE ;
+                    hvoTask.ActivityDate = System.today().addDays(Constants.DAYS_DUE_HIGH_VALUE);
+                    newFollowUpTasks.add(hvoTask);
+                }
             }
         }
 
